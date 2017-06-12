@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            text-align: center;
+            padding: 100px;
+        }
+        canvas{
+            border-radius: 3px;
+            background: #efefef;
+        }
+    </style>
+</head>
+<body onload="startGame()">
+<script>
+function startGame() {
+    MoveBox.init();
+    myGameArea.start();
+    myGamePiece = new component(20, 20, 'green', 100, 50);
+}
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.height = 500;
+        this.canvas.width = 1500;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval = setInterval(updateGameArea, 50);
+    }, 
+    clear: function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+};
+
+function component(width, heigth, color, x, y){
+    this.width = width;
+    this.heigth = heigth;
+    this.x = x;
+    this.y = y;
+    this.update = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        if(myGameArea.canvas.height == this.y || myGameArea.canvas.width == this.x){
+        }
+        ctx.fillRect(this.x, this.y, this.width, this.heigth);
+    }
+};
+
+function updateGameArea(){
+    myGameArea.clear();
+    myGamePiece.update();
+};
+
+function updatePiecePosition(newPosition, axis){
+    var interval = setInterval(function(){
+        myGameArea.clear();
+        myGamePiece[axis] += newPosition;
+        myGamePiece.update();
+    }, 20);
+    return interval;
+}
+
+var MoveBox = {
+    interval: false,
+    init: function(){
+            document.onkeydown = checkKey;
+            var checker = false;
+            function checkKey(e){
+                e = e || window.event;
+                if (e.keyCode == '38') {
+                    // up arrow
+                    console.log('up');
+                    clearInterval(this.interval);
+                    this.interval = updatePiecePosition(-5, 'y');
+                    return;
+                }
+                else if (e.keyCode == '40') {
+                    // down arrow
+                    console.log('down');
+                    clearInterval(this.interval);
+                    this.interval = updatePiecePosition(5, 'y');
+                    return;
+                }
+                else if (e.keyCode == '37') {
+                    // left arrow
+                    clearInterval(this.interval);
+                    this.interval = updatePiecePosition(-5, 'x');
+                    return;
+                }
+                else if (e.keyCode == '39') {
+                    // right arrow
+                    clearInterval(this.interval);
+                    this.interval = updatePiecePosition(5, 'x');
+                    return;
+                }
+            }
+    },
+};
+</script>
+</body>
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>-->
+</html>
